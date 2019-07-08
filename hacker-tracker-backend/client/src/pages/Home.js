@@ -9,6 +9,7 @@ class Home extends Component {
 
     render() {
         return (
+            <Container>
             <div>
                 <Jumbotron>
                     <h1>Welcome to Hacker Tracker!</h1>
@@ -38,6 +39,7 @@ class Home extends Component {
                     </Col>
                 </Row>
             </div>
+            </Container>
         )
     }
 }
