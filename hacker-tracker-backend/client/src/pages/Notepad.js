@@ -3,6 +3,11 @@ import Jumbotron from "../components/Jumbotron/jumbo";
 import { Col, Row, Container } from "../components/Grid";
 import { Input, TextArea, FormBtn } from "../components/Form";
 import API from "../utils/API";
+import { List, ListItem } from "../components/List";
+import { Link } from "react-router-dom";
+import DeleteBtn from "../components/DeleteBtn";
+
+
 
 class Notepad extends Component {
     state = {
@@ -11,6 +16,16 @@ class Notepad extends Component {
       category: "",
       note: ""
     }
+
+    loadNotes = () => {
+      API.getNotes()
+        .then(res =>
+          this.setState({ notes: res.data, title: "", category: "", note: "" })
+        )
+        .catch(err => console.log(err));
+    };
+  
+  
 
     handleInputChange = event => {
       const { name, value } = event.target;
@@ -22,12 +37,12 @@ class Notepad extends Component {
     handleFormSubmit = event => {
       event.preventDefault();
       if (this.state.title && this.state.note) {
-        API.saveBook({
+        API.saveNote({
           title: this.state.title,
           category: this.state.category,
           note: this.state.note
         })
-          // .then(res => this.loadBooks())
+          .then(res => this.loadNotes())
           .catch(err => console.log(err));
       }
     };
@@ -65,6 +80,25 @@ class Notepad extends Component {
                 Submit Note
               </FormBtn>
             </form>
+            <Jumbotron>
+              <h1>Books On My List</h1>
+            </Jumbotron>
+            {this.state.notes.length ? (
+              <List>
+                {this.state.notes.map(note => (
+                  <ListItem key={note._id}>
+                    <Link to={"/notes/" + note._id}>
+                      <strong>
+                        {note.title} 
+                      </strong>
+                    </Link>
+                    {/* <DeleteBtn onClick={() => this.deleteBook(book._id)} /> */}
+                  </ListItem>
+                ))}
+              </List>
+            ) : (
+              <h3>No Results to Display</h3>
+            )}
             </Container>
         )
     }
